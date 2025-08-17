@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const sql = require('mssql');
 const config = {
-  user: 'sa',
-  password: 'Matiescucha90..',
-  server: 'dev.matiivilla.cl',
-  database: 'moraartt',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
   options: {
     encrypt: false, // Cambia a true si usas Azure
     trustServerCertificate: true

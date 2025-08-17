@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 
-const app = express();
-app.use(cors());
+const app = express();         // <-- Primero define app
+app.use(cors());               // <-- Luego usa app
+
 app.use(express.json());
 
 const productos = require('./productos');
