@@ -51,7 +51,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
             <div className="text-center mb-8">
               <img src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc0lvKvSyCXbcAaSYNqKr0LMw3z9nWTuy4eIjix" alt="Mora.Artt Logo" className="w-24 h-24 mx-auto mb-4" />
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Iniciar Sesión ctm</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Iniciar Sesión</h2>
               <p className="text-gray-600">Accede a tu cuenta de Mora.Artt</p>
             </div>
 

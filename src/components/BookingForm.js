@@ -3,11 +3,17 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, User, Phone, Mail, MessageSquare, ArrowLeft } from 'lucide-react';
 import { formatPrice, formatDuration, getAvailableTimeSlots, isValidEmail, isValidPhone } from '../utils/helpers';
 
+// Cambia la URL a tu servidor remoto y los nombres de los campos
 export async function registrarUsuario({ nombreUsuario, password, correo }) {
-  const res = await fetch('http://localhost:4000/api/usuarios', {
+  const res = await fetch('https://dev.matiivilla.cl:4000/api/usuarios', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nombreUsuario, password, correo })
+    body: JSON.stringify({
+      NombreUsuario: nombreUsuario,
+      HashPassword: password,
+      Correo: correo,
+      Rol: "usuario"
+    })
   });
   return await res.json();
 }
@@ -67,7 +73,7 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
     if (validateForm()) {
       onSubmit({
         ...formData,
-        productoId: product.id
+        productoId: product.Id // Usa el campo correcto según tu BD
       });
     }
   };
@@ -96,13 +102,13 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
         </div>
         
         <div className="bg-white/20 rounded-2xl p-4">
-          <h3 className="font-semibold text-lg mb-2">{product.nombre}</h3>
+          <h3 className="font-semibold text-lg mb-2">{product.Nombre}</h3>
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              {formatDuration(product.duracion)}
+              {formatDuration(product.Duracion)}
             </span>
-            <span className="font-bold text-lg">{formatPrice(product.precio)}</span>
+            <span className="font-bold text-lg">{formatPrice(product.Precio)}</span>
           </div>
         </div>
       </div>

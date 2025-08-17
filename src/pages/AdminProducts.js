@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Filter } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { defaultProducts } from '../mock/products';
+import { obtenerProductos } from '../api/productos';
 import { generateUniqueId } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 
 const AdminProducts = ({ user, onLoginClick }) => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState(defaultProducts);
+  const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [showAddForm, setShowAddForm] = useState(false);
@@ -23,6 +23,14 @@ const AdminProducts = ({ user, onLoginClick }) => {
     image: '',
     available: true
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await obtenerProductos();
+      setProducts(data);
+    };
+    fetchData();
+  }, []);
 
   if (!user || user.role !== 'admin') {
     return (
