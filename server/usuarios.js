@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { sql, config } = require('./db');
 
-// Obtener todos los usuarios
+//listar usuarios
 router.get('/', async (req, res) => {
   try {
     await sql.connect(config);
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Eliminar usuario por ID
+//eliminar user por id
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -28,7 +28,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// LOGIN DE USUARIO
+// login
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -48,7 +48,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Registrar nuevo usuario
+// registro de user
 router.post('/', async (req, res) => {
   const { NombreUsuario, HashPassword, Correo, Rol } = req.body;
   try {
