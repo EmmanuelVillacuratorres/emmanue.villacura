@@ -66,14 +66,14 @@ const AdminProducts = ({ user, onLoginClick }) => {
     { key: 'art', label: 'Nail Art' },
     { key: 'pedicure', label: 'Pedicure' }
   ];
-
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filter === 'all' || product.category === filter;
-    return matchesSearch && matchesFilter;
-  });
-
+const filteredProducts = products.filter(product => {
+  const matchesSearch =
+    (product.Nombre || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (product.Descripcion || '').toLowerCase().includes(searchTerm.toLowerCase());
+  const matchesFilter =
+    filter === 'all' || (product.Categoria || '').toLowerCase() === filter;
+  return matchesSearch && matchesFilter;
+});
   const handleAddProduct = () => {
     setFormData({
       name: '',

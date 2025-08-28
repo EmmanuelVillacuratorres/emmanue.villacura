@@ -8,7 +8,7 @@ const UsuariosList = () => {
   const cargarUsuarios = async () => {
     setLoading(true);
     const data = await obtenerUsuarios();
-    console.log(data); // Verifica que los datos se obtienen correctamente
+    console.log(data); //los datos se obtienen correctamente
     setUsuarios(data);
     setLoading(false);
   };

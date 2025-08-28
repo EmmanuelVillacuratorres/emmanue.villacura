@@ -8,11 +8,12 @@ const config = {
   server: 'dev.matiivilla.cl',
   database: 'moraartt',
   options: {
-    encrypt: false,
+    encrypt: false, // Cambia a true si usas Azure
     trustServerCertificate: true
   }
 };
 
+// obtener todos los productos
 router.get('/', async (req, res) => {
   try {
     await sql.connect(config);

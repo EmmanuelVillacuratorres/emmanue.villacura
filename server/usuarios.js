@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { sql, config } = require('./db');
 
+
 // Obtener todos los usuarios
 router.get('/', async (req, res) => {
   try {

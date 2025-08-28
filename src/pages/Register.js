@@ -18,7 +18,7 @@ const Register = ({ onRegister }) => {
     });
     if (result.success) {
       alert('Usuario registrado correctamente');
-      // Redirige o muestra login
+             // Redirigir
     } else {
       alert('Error al registrar usuario');
     }

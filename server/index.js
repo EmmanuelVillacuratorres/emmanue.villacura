@@ -12,4 +12,4 @@ app.use('/api/productos', productos);
 const usuarios = require('./usuarios');
 app.use('/api/usuarios', usuarios);
 
-app.listen(4000, () => console.log('API corriendo en puerto 4000'));
+app.listen(4000, () => console.log('API corriendo CTM'));

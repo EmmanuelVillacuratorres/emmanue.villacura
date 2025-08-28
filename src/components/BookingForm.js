@@ -5,7 +5,9 @@ import { formatPrice, formatDuration, getAvailableTimeSlots, isValidEmail, isVal
 
 // Cambia la URL a tu servidor remoto y los nombres de los campos
 export async function registrarUsuario({ nombreUsuario, password, correo }) {
-  const res = await fetch('https://dev.matiivilla.cl:4000/api/usuarios', {
+ const res = await fetch('https://dev.matiivilla.cl:4000/api/usuarios', {
+ //   const res = await fetch('http://localhost:4000/api/usuarios', {
+
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
