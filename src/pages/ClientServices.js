@@ -51,13 +51,15 @@ const ClientServices = ({ user, onLoginClick }) => {
     }
 
     const reserva = {
-      UsuarioId: user.id, // Usa el id correcto
-      ProductoId: selectedProduct.Id,
-      Fecha: bookingData.fecha,
-      Hora: bookingData.hora,
+      UsuarioId: user.id,
+      ProductoId: bookingData.productId,
+      Fecha: bookingData.date,
+      Hora: bookingData.time, // <-- aquí debe llegar el valor correcto
       Estado: 'pendiente',
-      Notas: bookingData.notas || '',
-      CreadoEn: new Date()
+      Notas: bookingData.notes || '',
+      CreadoEn: new Date(),
+      Telefono: bookingData.telefonoCliente,
+      Email: bookingData.correoCliente
     };
 
     await crearReserva(reserva);

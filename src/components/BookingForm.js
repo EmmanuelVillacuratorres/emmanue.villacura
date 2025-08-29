@@ -30,6 +30,15 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
     notas: ''
   });
 
+  const [form, setForm] = useState({
+    nombreCliente: '',
+    fecha: '',
+    hora: '',
+    notas: '',
+    telefono: '',
+    email: ''
+  });
+
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (field, value) => {
@@ -74,8 +83,13 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
     e.preventDefault();
     if (validateForm()) {
       onSubmit({
-        ...formData,
-        productoId: product.Id // Usa el campo correcto según tu BD
+        nombreCliente: formData.nombreCliente,
+        correoCliente: formData.correoCliente,
+        telefonoCliente: formData.telefonoCliente,
+        date: formData.fecha,
+        time: formData.hora, // <-- asegúrate de enviar la hora seleccionada
+        notes: formData.notas,
+        productId: product.Id
       });
     }
   };
@@ -181,9 +195,10 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
             </label>
             <input
               type="date"
-              value={formData.fecha}
-              onChange={(e) => handleInputChange('fecha', e.target.value)}
-              min={today}
+              name="date"
+              value={formData.date}
+              onChange={e => handleInputChange('date', e.target.value)}
+              required
               className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
                 errors.fecha ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'
               } focus:outline-none`}

@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, User, Phone, Mail, MessageSquare, Check, X, Filter } from 'lucide-react';
-import { defaultProducts, defaultBookings } from '../mock/products';
+import { cambiarEstadoReserva, obtenerReservas } from '../api/reservas';
 import { formatPrice, formatDuration } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 
+function formatTimeAMPM(timeStr) {
+  if (!timeStr) return '';
+  const [hour, minute] = timeStr.split(':');
+  let h = parseInt(hour, 10);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12;
+  h = h === 0 ? 12 : h;
+  return `${h}:${minute} ${ampm}`;
+}
+
 const AdminBookings = ({ user, onLoginClick }) => {
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState(defaultBookings);
-  const [products] = useState(defaultProducts);
+  const [reservas, setReservas] = useState([]);
   const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    const cargarReservas = async () => {
+      try {
+        const data = await obtenerReservas();
+        setReservas(data);
+      } catch (error) {
+        alert('Error al cargar reservas: ' + error.message);
+      }
+    };
+    cargarReservas();
+  }, []);
 
   if (!user || user.role !== 'admin') {
     return (
@@ -44,13 +65,18 @@ const AdminBookings = ({ user, onLoginClick }) => {
   ];
 
   const filteredBookings = filter === 'all' 
-    ? bookings 
-    : bookings.filter(booking => booking.status === filter);
+    ? reservas 
+    : reservas.filter(booking => booking.status === filter);
 
-  const handleStatusChange = (bookingId, newStatus) => {
-    setBookings(prev => prev.map(booking => 
-      booking.id === bookingId ? { ...booking, status: newStatus } : booking
-    ));
+  const handleStatusChange = async (bookingId, newStatus) => {
+    try {
+      await cambiarEstadoReserva(bookingId, newStatus);
+      // Recarga las reservas después de cambiar el estado
+      const data = await obtenerReservas();
+      setReservas(data);
+    } catch (error) {
+      alert('Error al cambiar estado: ' + error.message);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -85,7 +111,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
         
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar className="w-4 h-4" />
-          <span>Total: {bookings.length} reservas</span>
+          <span>Total: {reservas.length} reservas</span>
         </div>
       </div>
 
@@ -113,7 +139,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
             <Filter className="w-4 h-4" />
             {status.label}
             <span className="ml-1 px-2 py-0.5 bg-black/10 rounded-lg text-xs">
-              {status.key === 'all' ? bookings.length : bookings.filter(b => b.status === status.key).length}
+              {status.key === 'all' ? reservas.length : reservas.filter(b => b.status === status.key).length}
             </span>
           </motion.button>
         ))}
@@ -121,11 +147,9 @@ const AdminBookings = ({ user, onLoginClick }) => {
 
       <div className="space-y-6">
         {filteredBookings.map((booking, index) => {
-          const product = products.find(p => p.id === booking.productId);
-          
           return (
             <motion.div
-              key={booking.id}
+              key={booking.Id}
               className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -138,19 +162,19 @@ const AdminBookings = ({ user, onLoginClick }) => {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-xl font-bold text-gray-900 mb-1">
-                          {booking.clientName}
+                          {booking.NombreUsuario || booking.clientName || 'Cliente'}
                         </h3>
                         <div className="flex items-center gap-2">
-                          <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(booking.status)}`}>
-                            {getStatusLabel(booking.status)}
+                          <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(booking.Estado)}`}>
+                            {getStatusLabel(booking.Estado)}
                           </span>
                         </div>
                       </div>
                       
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">ID: {booking.id}</p>
+                        <p className="text-sm text-gray-500">ID: {booking.Id}</p>
                         <p className="text-xs text-gray-400">
-                          Creada: {new Date(booking.createdAt).toLocaleDateString()}
+                          Creada: {booking.CreadoEn ? new Date(booking.CreadoEn).toLocaleDateString() : ''}
                         </p>
                       </div>
                     </div>
@@ -162,7 +186,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Servicio</p>
-                          <p className="font-semibold text-gray-900">{product?.name}</p>
+                          <p className="font-semibold text-gray-900">{booking.NombreProducto}</p>
                         </div>
                       </div>
 
@@ -173,7 +197,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         <div>
                           <p className="text-sm text-gray-500">Fecha y Hora</p>
                           <p className="font-semibold text-gray-900">
-                            {booking.date} - {booking.time}
+                            {booking.Fecha && booking.Fecha.split('T')[0]} - {formatTimeAMPM(booking.Hora)}
                           </p>
                         </div>
                       </div>
@@ -185,7 +209,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         <div>
                           <p className="text-sm text-gray-500">Duración y Precio</p>
                           <p className="font-semibold text-gray-900">
-                            {formatDuration(product?.duration || 0)} - {formatPrice(product?.price || 0)}
+                            {formatDuration(booking.Duracion || booking.duration || 0)} - {formatPrice(booking.Precio || booking.price || 0)}
                           </p>
                         </div>
                       </div>
@@ -196,7 +220,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Teléfono</p>
-                          <p className="font-semibold text-gray-900">{booking.clientPhone}</p>
+                          <p className="font-semibold text-gray-900">{booking.Telefono || booking.clientPhone || 'No ingresado'}</p>
                         </div>
                       </div>
 
@@ -206,28 +230,28 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Email</p>
-                          <p className="font-semibold text-gray-900">{booking.clientEmail}</p>
+                          <p className="font-semibold text-gray-900">{booking.Email || booking.clientEmail || 'No ingresado'}</p>
                         </div>
                       </div>
 
-                      {booking.notes && (
+                      {booking.Notas && (
                         <div className="flex items-start gap-3 md:col-span-2 lg:col-span-1">
                           <div className="p-2 bg-gray-100 rounded-lg">
                             <MessageSquare className="w-4 h-4 text-gray-600" />
                           </div>
                           <div>
                             <p className="text-sm text-gray-500">Notas</p>
-                            <p className="font-semibold text-gray-900">{booking.notes}</p>
+                            <p className="font-semibold text-gray-900">{booking.Notas}</p>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {booking.status === 'pending' && (
+                  {booking.Estado === 'pendiente' && (
                     <div className="flex flex-col sm:flex-row gap-3 lg:flex-col">
                       <motion.button
-                        onClick={() => handleStatusChange(booking.id, 'confirmed')}
+                        onClick={() => handleStatusChange(booking.Id, 'confirmada')}
                         className="flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white font-semibold rounded-xl hover:bg-green-600 transition-colors"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -235,9 +259,8 @@ const AdminBookings = ({ user, onLoginClick }) => {
                         <Check className="w-4 h-4" />
                         Confirmar
                       </motion.button>
-                      
                       <motion.button
-                        onClick={() => handleStatusChange(booking.id, 'cancelled')}
+                        onClick={() => handleStatusChange(booking.Id, 'cancelada')}
                         className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500 text-white font-semibold rounded-xl hover:bg-red-600 transition-colors"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -275,6 +298,43 @@ const AdminBookings = ({ user, onLoginClick }) => {
           </p>
         </motion.div>
       )}
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Todas las Reservas</h2>
+        
+        <div className="overflow-x-auto rounded-xl border">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duración</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hora</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notas</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {reservas.map(reserva => (
+                <tr key={reserva.Id}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.NombreUsuario}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.NombreProducto}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Categoria}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Duracion} min</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Fecha && reserva.Fecha.split('T')[0]}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Hora && formatTimeAMPM(reserva.Hora)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Estado}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Notas}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </motion.div>
   );
 };
