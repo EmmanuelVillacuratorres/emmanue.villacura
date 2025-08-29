@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Filter } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { obtenerProductos } from '../api/productos';
+import { obtenerProductos, agregarProducto } from '../api/productos';
 import { generateUniqueId } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 
@@ -102,30 +102,30 @@ const filteredProducts = products.filter(product => {
     setShowAddForm(true);
   };
 
-  const handleSubmitProduct = (e) => {
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
-    
+
+    // Mapea los campos del formulario a los nombres que espera el backend
     const productData = {
-      ...formData,
-      price: parseInt(formData.price),
-      duration: parseInt(formData.duration),
-      image: formData.image || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400'
+      Nombre: formData.name,
+      Descripcion: formData.description,
+      Precio: parseInt(formData.price),
+      Duracion: parseInt(formData.duration),
+      Categoria: formData.category,
+      UrlImagen: formData.image || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400',
+      Disponible: formData.available ? 1 : 0
     };
 
-    if (editingProduct) {
-      setProducts(prev => prev.map(p => 
-        p.id === editingProduct.id ? { ...p, ...productData } : p
-      ));
-    } else {
-      const newProduct = {
-        id: generateUniqueId(),
-        ...productData
-      };
-      setProducts(prev => [newProduct, ...prev]);
+    try {
+      await agregarProducto(productData);
+      // Vuelve a cargar los productos desde el backend
+      const data = await obtenerProductos();
+      setProducts(data);
+      setShowAddForm(false);
+      setEditingProduct(null);
+    } catch (error) {
+      alert('Error al agregar producto: ' + error.message);
     }
-
-    setShowAddForm(false);
-    setEditingProduct(null);
   };
 
   const handleToggleAvailability = (productId) => {

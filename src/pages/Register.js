@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { registrarUsuario } from '../api/usuarios';
+import { useNavigate } from 'react-router-dom';
 
 const Register = ({ onRegister }) => {
   const [form, setForm] = useState({ username: '', password: '', email: '' });
+  const navigate = useNavigate();
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -10,7 +12,6 @@ const Register = ({ onRegister }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    // Transforma los nombres de los campos aquí:
     const result = await registrarUsuario({
       nombreUsuario: form.username,
       password: form.password,
@@ -18,9 +19,9 @@ const Register = ({ onRegister }) => {
     });
     if (result.success) {
       alert('Usuario registrado correctamente');
-             // Redirigir
+      navigate('/ClientServices'); // Redirige a la página de productos
     } else {
-      alert('Error al registrar usuario');
+      alert('Usuario o correo ya existe');
     }
   };
 
