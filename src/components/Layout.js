@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Sparkles, User, Settings, Home, LogIn, LogOut } from 'lucide-react';
+import { Sparkles, User, Settings, Home, LogIn, LogOut, Heart } from 'lucide-react';
 
 const Layout = ({ user, onLogout, onLoginClick, children }) => {
   const navigate = useNavigate();
@@ -18,6 +18,13 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
   ];
 
   const navItems = user?.role === 'admin' ? adminNavItems : clientNavItems;
+
+  const socialLinks = [
+    { href: 'https://www.instagram.com/mora.artt/', icon: <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" className="w-5 h-5" /> },
+    //{ href: 'https://facebook.com/', icon: <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook" className="w-5 h-5" /> },
+    { href: 'emmanuel.villacura@inacapmail.cl', icon: <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Correo" className="w-5 h-5" /> },
+    { href: 'https://wa.me/+56999809393', icon: <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" className="w-5 h-5" /> },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
@@ -111,6 +118,28 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {children}
       </main>
+
+      <footer className="w-full bg-gray-100 text-center py-4 mt-auto border-t flex items-center justify-between px-6">
+        <Heart className="text-pink-500 w-6 h-6" />
+        <div className="flex items-center gap-4 justify-center flex-1">
+          {socialLinks.map((link, idx) => (
+            <a
+              key={idx}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition duration-200 hover:scale-110
+                hover:[filter:_brightness(0)_saturate(100%)_invert(39%)_sepia(97%)_saturate(749%)_hue-rotate(314deg)_brightness(97%)_contrast(101%)]"
+            >
+              {link.icon}
+            </a>
+          ))}
+          <span className="text-gray-500 text-sm ml-4">
+            © {new Date().getFullYear()} Mora.Artt. Todos los derechos reservados.   Emamnuel Villacura
+          </span>
+        </div>
+        <Heart className="text-pink-500 w-6 h-6" />
+      </footer>
     </div>
   );
 };

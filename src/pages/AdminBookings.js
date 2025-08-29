@@ -25,6 +25,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
       try {
         const data = await obtenerReservas();
         setReservas(data);
+        console.log('Reservas recibidas:', data); // <-- Agrega este log
       } catch (error) {
         alert('Error al cargar reservas: ' + error.message);
       }
@@ -162,7 +163,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-xl font-bold text-gray-900 mb-1">
-                          {booking.NombreUsuario || booking.clientName || 'Cliente'}
+                          {booking.NombreCliente || booking.NombreCompleto || booking.NombreUsuario || 'Cliente'}
                         </h3>
                         <div className="flex items-center gap-2">
                           <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(booking.Estado)}`}>
@@ -308,6 +309,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuario</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duración</th>
@@ -320,11 +322,14 @@ const AdminBookings = ({ user, onLoginClick }) => {
             <tbody className="bg-white divide-y divide-gray-200">
               {reservas.map(reserva => (
                 <tr key={reserva.Id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.NombreUsuario}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.NombreProducto}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Categoria}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Duracion} min</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {reserva.NombreCliente || reserva.NombreCompleto || reserva.NombreUsuario}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.UsuarioCorreo || 'No ingresado'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.UsuarioTelefono || 'No ingresado'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.NombreProducto || 'No ingresado'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Categoria || 'No ingresado'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Duracion ? `${reserva.Duracion} min` : 'No ingresado'}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Fecha && reserva.Fecha.split('T')[0]}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Hora && formatTimeAMPM(reserva.Hora)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{reserva.Estado}</td>

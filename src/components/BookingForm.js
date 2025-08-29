@@ -87,7 +87,7 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
         correoCliente: formData.correoCliente,
         telefonoCliente: formData.telefonoCliente,
         date: formData.fecha,
-        time: formData.hora, // <-- asegúrate de enviar la hora seleccionada
+        time: formData.hora,
         notes: formData.notas,
         productId: product.Id
       });
@@ -195,9 +195,10 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
             </label>
             <input
               type="date"
-              name="date"
-              value={formData.date}
-              onChange={e => handleInputChange('date', e.target.value)}
+              name="fecha"
+              value={formData.fecha}
+              onChange={e => handleInputChange('fecha', e.target.value)}
+              min={today} // <-- Solo permite seleccionar desde hoy en adelante
               required
               className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
                 errors.fecha ? 'border-red-300 bg-red-50' : 'border-gray-200 focus:border-pink-500'

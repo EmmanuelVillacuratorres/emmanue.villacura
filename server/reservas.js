@@ -24,21 +24,20 @@ router.get('/', async (req, res) => {
     const result = await sql.query(`
       SELECT 
         r.Id,
+        r.NombreCliente,
+        u.Correo AS UsuarioCorreo,
+        u.Telefono AS UsuarioTelefono,
+        p.Nombre AS NombreProducto,
+        p.Categoria,
+        p.Duracion,
+        p.Precio,
         r.Fecha,
         r.Hora,
         r.Estado,
-        r.Notas,
-        r.CreadoEn,
-        u.NombreUsuario,
-        u.Correo,
-        p.Nombre AS NombreProducto,
-        p.Categoria,
-        p.Precio,
-        p.Duracion
+        r.Notas
       FROM Reservas r
       JOIN Usuarios u ON r.UsuarioId = u.Id
-      JOIN Productos p ON r.ProductoId = p.Id
-      ORDER BY r.Fecha DESC, r.Hora DESC
+      LEFT JOIN Productos p ON r.ProductoId = p.Id
     `);
     res.json(result.recordset);
   } catch (err) {
