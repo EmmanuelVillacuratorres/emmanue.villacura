@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard';
 import { obtenerProductos } from '../api/productos';
 import { generateUniqueId } from '../utils/helpers';
 import BookingForm from '../components/BookingForm';
+import { crearReserva } from '../api/reservas';
 
 const ClientServices = ({ user, onLoginClick }) => {
   const [products, setProducts] = useState([]);
@@ -43,19 +44,24 @@ const ClientServices = ({ user, onLoginClick }) => {
     setShowBookingForm(true);
   };
 
-  const handleBookingSubmit = (bookingData) => {
-    const booking = {
-      id: generateUniqueId(),
-      ...bookingData,
-      status: 'pending',
-      createdAt: new Date()
+  const handleBookingSubmit = async (bookingData) => {
+    if (!user || !user.id) {
+      alert('Debes iniciar sesión para reservar.');
+      return;
+    }
+
+    const reserva = {
+      UsuarioId: user.id, // Usa el id correcto
+      ProductoId: selectedProduct.Id,
+      Fecha: bookingData.fecha,
+      Hora: bookingData.hora,
+      Estado: 'pendiente',
+      Notas: bookingData.notas || '',
+      CreadoEn: new Date()
     };
-    
-    // Aquí normalmente enviarías la reserva al backend
-    console.log('Nueva reserva:', booking);
-    
-    // Mostrar confirmación
-    alert('¡Reserva enviada exitosamente! Te contactaremos pronto para confirmar.');
+
+    await crearReserva(reserva);
+    alert('¡Reserva enviada exitosamente!');
     setShowBookingForm(false);
     setSelectedProduct(null);
   };

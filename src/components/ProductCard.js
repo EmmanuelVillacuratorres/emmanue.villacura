@@ -97,18 +97,18 @@ const ProductCard = ({
               >
                 Editar
               </motion.button>
-              <motion.button
-                onClick={() => onToggleAvailability(product.Id)}
+              <button
+                onClick={() => onToggleAvailability(product.Id, product.Disponible)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  disponible
+                  product.Disponible
                     ? 'bg-red-500 text-white hover:bg-red-600'
                     : 'bg-green-500 text-white hover:bg-green-600'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {disponible ? 'Desactivar' : 'Activar'}
-              </motion.button>
+                {product.Disponible ? 'Desactivar' : 'Activar'}
+              </button>
             </>
           )}
         </div>

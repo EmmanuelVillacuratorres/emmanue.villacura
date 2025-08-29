@@ -235,3 +235,7 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
 };
 
 export default BookingForm;
+
+// Después de un login exitoso
+localStorage.setItem('user', JSON.stringify(usuario)); // usuario es el objeto recibido del backend
+setUser(usuario); // si usas useState o contexto

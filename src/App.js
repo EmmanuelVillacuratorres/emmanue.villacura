@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import ClientServices from './pages/ClientServices';
 import AdminDashboard from './pages/AdminDashboard';
@@ -13,14 +13,29 @@ import UsuariosList from './components/UsuariosList';
 import { loginUsuario } from './api/usuarios';
 
 const App = () => {
-  const [currentUser, setCurrentUser] = useState(null);
+  // Recupera el usuario de localStorage al cargar la app
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // Si el usuario cambia, actualiza localStorage
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('user', JSON.stringify(currentUser));
+    } else {
+      localStorage.removeItem('user');
+    }
+  }, [currentUser]);
 
   const handleLogin = async (username, password) => {
     const result = await loginUsuario({ username, password });
     if (result.success) {
+      // Guarda el usuario completo, incluyendo el Id
       setCurrentUser({
+        id: result.user.Id,
         username: result.user.NombreUsuario,
         email: result.user.Correo,
         role: result.user.Rol
@@ -32,8 +47,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
+    localStorage.removeItem('user');
     setCurrentUser(null);
     navigate('/');
   };

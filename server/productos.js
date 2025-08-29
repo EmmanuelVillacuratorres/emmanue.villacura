@@ -38,4 +38,53 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Actualizar producto
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    Nombre,
+    Descripcion,
+    Precio,
+    Categoria,
+    UrlImagen,
+    Duracion,
+    Disponible
+  } = req.body;
+
+  try {
+    await sql.connect(config);
+    await sql.query`
+      UPDATE Productos
+      SET Nombre = ${Nombre},
+          Descripcion = ${Descripcion},
+          Precio = ${Precio},
+          Categoria = ${Categoria},
+          UrlImagen = ${UrlImagen},
+          Duracion = ${Duracion},
+          Disponible = ${Disponible}
+      WHERE Id = ${id}
+    `;
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Cambiar disponibilidad de un producto
+router.patch('/:id/disponible', async (req, res) => {
+  const { id } = req.params;
+  const { Disponible } = req.body;
+  try {
+    await sql.connect(config);
+    await sql.query`
+      UPDATE Productos
+      SET Disponible = ${Disponible}
+      WHERE Id = ${id}
+    `;
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

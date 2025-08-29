@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Search, Filter } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { obtenerProductos, agregarProducto } from '../api/productos';
+import { obtenerProductos, agregarProducto, editarProducto, cambiarDisponibilidadProducto } from '../api/productos';
 import { generateUniqueId } from '../utils/helpers';
 import { useNavigate } from 'react-router-dom';
 
@@ -90,13 +90,13 @@ const filteredProducts = products.filter(product => {
 
   const handleEditProduct = (product) => {
     setFormData({
-      name: product.name,
-      description: product.description,
-      price: product.price.toString(),
-      duration: product.duration.toString(),
-      category: product.category,
-      image: product.image,
-      available: product.available
+      name: product.Nombre || '',
+      description: product.Descripcion || '',
+      price: product.Precio !== undefined && product.Precio !== null ? product.Precio.toString() : '',
+      duration: product.Duracion !== undefined && product.Duracion !== null ? product.Duracion.toString() : '',
+      category: product.Categoria || 'manicure',
+      image: product.UrlImagen || '',
+      available: product.Disponible === 1
     });
     setEditingProduct(product);
     setShowAddForm(true);
@@ -105,38 +105,54 @@ const filteredProducts = products.filter(product => {
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
 
-    // Mapea los campos del formulario a los nombres que espera el backend
+    // Al crear o editar producto
     const productData = {
       Nombre: formData.name,
       Descripcion: formData.description,
-      Precio: parseInt(formData.price),
+      Precio: parseInt(formData.price.replace(/\./g, '')),
       Duracion: parseInt(formData.duration),
       Categoria: formData.category,
       UrlImagen: formData.image || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400',
-      Disponible: formData.available ? 1 : 0
+      Disponible: 0 // Siempre desactivado al crear o editar
     };
 
     try {
-      await agregarProducto(productData);
-      // Vuelve a cargar los productos desde el backend
+      if (editingProduct) {
+        // Si estamos editando, actualiza el producto
+        await editarProducto(editingProduct.Id || editingProduct.id, productData);
+      } else {
+        // Si no, agrega uno nuevo
+        await agregarProducto(productData);
+      }
       const data = await obtenerProductos();
       setProducts(data);
       setShowAddForm(false);
       setEditingProduct(null);
     } catch (error) {
-      alert('Error al agregar producto: ' + error.message);
+      alert('Error al guardar producto: ' + error.message);
     }
   };
 
-  const handleToggleAvailability = (productId) => {
-    setProducts(prev => prev.map(p => 
-      p.id === productId ? { ...p, available: !p.available } : p
-    ));
+  const handleToggleAvailability = async (productId, disponibleActual) => {
+    try {
+      await cambiarDisponibilidadProducto(productId, disponibleActual ? 0 : 1);
+      const data = await obtenerProductos();
+      setProducts(data);
+    } catch (error) {
+      alert('Error al cambiar disponibilidad: ' + error.message);
+    }
   };
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  function formatPriceInput(value) {
+    // Elimina todo lo que no sea dígito
+    const numeric = value.replace(/\D/g, '');
+    // Formatea con puntos cada 3 dígitos
+    return numeric.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
 
   if (showAddForm) {
     return (
@@ -183,7 +199,10 @@ const filteredProducts = products.filter(product => {
                   <input
                     type="number"
                     value={formData.price}
-                    onChange={(e) => handleInputChange('price', e.target.value)}
+                    onChange={(e) => {
+                      const formatted = formatPriceInput(e.target.value);
+                      setFormData(prev => ({ ...prev, price: formatted }));
+                    }}
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:outline-none"
                     required
                   />
@@ -322,7 +341,7 @@ const filteredProducts = products.filter(product => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProducts.map((product, index) => (
             <ProductCard
-              key={product.id}
+              key={product.Id}
               product={product}
               onEdit={handleEditProduct}
               onToggleAvailability={handleToggleAvailability}
