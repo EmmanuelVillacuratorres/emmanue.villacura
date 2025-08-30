@@ -17,7 +17,6 @@ export async function agregarProducto(producto) {
   }
   return await res.json();
 }
-//asd
 export async function editarProducto(id, producto) {
   const res = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',

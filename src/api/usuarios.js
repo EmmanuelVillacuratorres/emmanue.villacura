@@ -13,7 +13,6 @@ export async function registrarUsuario({ nombreUsuario, password, correo, Rol })
   });
   return await res.json();
 }
-//asd
 export async function obtenerUsuarios() {
      const res = await fetch(API_URL);
   return await res.json();

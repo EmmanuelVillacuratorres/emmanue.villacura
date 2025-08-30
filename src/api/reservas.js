@@ -12,7 +12,7 @@ export async function crearReserva(reserva) {
   }
   return await res.json();
 }
-//asd
+
 export async function obtenerReservas() {
   const res = await fetch(API_URL);
   if (!res.ok) {
