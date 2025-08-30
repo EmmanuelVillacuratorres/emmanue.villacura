@@ -1,4 +1,4 @@
-const API_URL = 'https://api-backend-2v0a.onrender.com/api/Productos';
+const API_URL = 'https://dev.matiivilla.cl/emma/api/Productos';
 
 export async function obtenerProductos() {
   const res = await fetch(API_URL);

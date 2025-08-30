@@ -1,4 +1,4 @@
-const API_URL = 'https://api-backend-2v0a.onrender.com/api/Usuarios';
+const API_URL = 'https://dev.matiivilla.cl/emma/api/Usuarios';
 
 export async function registrarUsuario({ nombreUsuario, password, correo, Rol }) {
    const res = await fetch(API_URL, {

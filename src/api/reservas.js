@@ -1,4 +1,4 @@
-const API_URL = 'https://api-backend-2v0a.onrender.com/api/Reservas';
+const API_URL = 'https://dev.matiivilla.cl/emma/api/Reservas';
 
 export async function crearReserva(reserva) {
   const res = await fetch(API_URL, {
