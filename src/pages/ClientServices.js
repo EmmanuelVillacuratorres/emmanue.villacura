@@ -86,7 +86,7 @@ const ClientServices = ({ user, onLoginClick }) => {
   return (
     <div>
       {/* Solo el contenido de la página */}
-      <h2 className="text-2xl font-bold mb-6 text-center">Nuestros Servicios</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Nuestros xxx Servicios</h2>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
