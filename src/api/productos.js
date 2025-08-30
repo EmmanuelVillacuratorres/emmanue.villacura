@@ -1,11 +1,12 @@
+const API_URL = 'http://localhost:4000/api/productos';
+
 export async function obtenerProductos() {
-//const res = await fetch('https://dev.matiivilla.cl:4000/api/productos');
-  const res = await fetch('http://localhost:4000/api/productos');
+  const res = await fetch(API_URL);
   return await res.json();
 }
 
 export async function agregarProducto(producto) {
-  const res = await fetch('http://localhost:4000/api/productos', {
+  const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(producto)
@@ -18,7 +19,7 @@ export async function agregarProducto(producto) {
 }
 
 export async function editarProducto(id, producto) {
-  const res = await fetch(`http://localhost:4000/api/productos/${id}`, {
+  const res = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(producto)
@@ -31,7 +32,7 @@ export async function editarProducto(id, producto) {
 }
 
 export async function cambiarDisponibilidadProducto(id, disponible) {
-  const res = await fetch(`http://localhost:4000/api/productos/${id}/disponible`, {
+  const res = await fetch(`${API_URL}/${id}/disponible`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ Disponible: disponible })

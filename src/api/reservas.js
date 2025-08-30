@@ -1,5 +1,7 @@
+const API_URL = 'http://localhost:4000/api/reservas';
+
 export async function crearReserva(reserva) {
-  const res = await fetch('http://localhost:4000/api/reservas', {
+  const res = await fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reserva)
@@ -12,7 +14,7 @@ export async function crearReserva(reserva) {
 }
 
 export async function obtenerReservas() {
-  const res = await fetch('http://localhost:4000/api/reservas');
+  const res = await fetch(API_URL);
   if (!res.ok) {
     const error = await res.text();
     throw new Error(error);
@@ -21,7 +23,7 @@ export async function obtenerReservas() {
 }
 
 export async function cambiarEstadoReserva(id, estado) {
-  const res = await fetch(`http://localhost:4000/api/reservas/${id}/estado`, {
+  const res = await fetch(`${API_URL}/${id}/estado`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ Estado: estado })

@@ -43,7 +43,7 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
               whileHover={{ scale: 1.05 }}
               onClick={() => navigate('/')}
             >
-              <img src="https://4tsix0yujj.ufs.sh/f/2vMRHqOYUHc0lvKvSyCXbcAaSYNqKr0LMw3z9nWTuy4eIjix" alt="Mora.Artt Logo" className="w-10 h-10" />
+              <img src="https://previews.dropbox.com/p/thumb/ACutIndtBHNaJmfhPyhIbzRfSlOT_In5RWoJ5fHCGu2CBHPAUDyTaP7j0SqJgLn97ztOtOdJ0MajKNahfF9wj8n7KCfaG2x45yq4YqV9KscGdx-k49ihLqh3bN1nrBM7LOjJOvYEwX3rNpZkd0rov7GoJmUJKFc8yarw_FItaKZiNBAazjkrlivtVvea2VXSENX3lIU3alkitZiGrrYrC_FuZb8lBA7Bbype8NDA09qymwDj8bhoylNGCieGw-rI-IQfLxnhew7U32h2O-fGeCDls3DfuO_fVt16dtTadqKfFN5D3K0qb6JC79myFlK5qwqqJo78a-NYRMUTA0S0rZVa/p.gif?is_prewarmed=true" alt="Mora.Artt Logo" className="w-16 h-16 drop-shadow-lg" />
               <h1 className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                 Mora.Artt
               </h1>
@@ -54,7 +54,14 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
                 <ul className="flex gap-6">
                   {navItems.map(item => (
                     <li key={item.path}>
-                      <Link to={item.path} className="flex items-center gap-2 hover:text-pink-500 transition">
+                      <Link
+                        to={item.path}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300
+                          ${location.pathname === item.path
+                            ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-blue-50'}
+                        `}
+                      >
                         {item.icon && <item.icon className="w-5 h-5" />}
                         {item.label}
                       </Link>
