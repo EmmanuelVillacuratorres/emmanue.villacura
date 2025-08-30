@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:4000/api/usuarios';
+const API_URL = 'https://api-backend-2v0a.onrender.com/api/Usuarios';
 
 export async function registrarUsuario({ nombreUsuario, password, correo, Rol }) {
    const res = await fetch(API_URL, {
