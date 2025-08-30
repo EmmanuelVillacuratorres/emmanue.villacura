@@ -4,12 +4,12 @@ const { sql, config } = require('./db');
 
 // Crear una reserva
 router.post('/', async (req, res) => {
-  const { UsuarioId, ProductoId, Fecha, Hora, Estado, Notas, CreadoEn, Telefono, Email } = req.body;
+  const { UsuarioId, ProductoId, Fecha, Hora, Estado, Notas, CreadoEn, Telefono, Email, NombreCliente } = req.body;
   try {
     await sql.connect(config);
     await sql.query`
-      INSERT INTO Reservas (UsuarioId, ProductoId, Fecha, Hora, Estado, Notas, CreadoEn, Telefono, Email)
-      VALUES (${UsuarioId}, ${ProductoId}, ${Fecha}, ${Hora}, ${Estado}, ${Notas}, ${CreadoEn}, ${Telefono}, ${Email})
+      INSERT INTO Reservas (UsuarioId, ProductoId, Fecha, Hora, Estado, Notas, CreadoEn, Telefono, Email, NombreCliente)
+      VALUES (${UsuarioId}, ${ProductoId}, ${Fecha}, ${Hora}, ${Estado}, ${Notas}, ${CreadoEn}, ${Telefono}, ${Email}, ${NombreCliente})
     `;
     res.json({ success: true });
   } catch (err) {
@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
     const result = await sql.query(`
       SELECT 
         r.Id,
+        r.UsuarioId,
         r.NombreCliente,
         u.Correo AS UsuarioCorreo,
         u.Telefono AS UsuarioTelefono,

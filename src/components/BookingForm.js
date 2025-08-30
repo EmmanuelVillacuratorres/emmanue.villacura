@@ -118,7 +118,9 @@ const BookingForm = ({ product, onSubmit, onBack }) => {
         </div>
         
         <div className="bg-white/20 rounded-2xl p-4">
-          <h3 className="font-semibold text-lg mb-2">{product.Nombre}</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-1">
+  {formData.nombreCliente || 'Cliente'}
+</h3>
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2">
               <Clock className="w-4 h-4" />

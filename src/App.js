@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import ClientServices from './pages/ClientServices';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import RestorePassword from './pages/RestorePassword';
 import UsuariosList from './components/UsuariosList';
 import { loginUsuario } from './api/usuarios';
+import ReservasUsuarios from './pages/ReservasUsuarios';
 
 const App = () => {
   // Recupera el usuario de localStorage al cargar la app
@@ -118,6 +119,14 @@ const App = () => {
         <Route path="/register" element={<Register onRegister={handleRegister} />} />
         <Route path="/restore-password" element={<RestorePassword onRestore={handleRestorePassword} />} />
         <Route path="/usuarios" element={<UsuariosList />} />
+        <Route
+          path="/mis-reservas"
+          element={
+            currentUser
+              ? <ReservasUsuarios user={currentUser} />
+              : <Navigate to="/login" replace />
+          }
+        />
       </Routes>
       <LoginModal 
         isOpen={isLoginModalOpen} 

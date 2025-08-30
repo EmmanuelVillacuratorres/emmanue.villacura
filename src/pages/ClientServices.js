@@ -52,14 +52,14 @@ const ClientServices = ({ user, onLoginClick }) => {
 
     const reserva = {
       UsuarioId: user.id,
-      ProductoId: bookingData.productId,
+      ProductoId: bookingData.productId, // <-- asegúrate que esto NO sea null
       Fecha: bookingData.date,
-      Hora: bookingData.time, // <-- aquí debe llegar el valor correcto
+      Hora: bookingData.time,
       Estado: 'pendiente',
       Notas: bookingData.notes || '',
       CreadoEn: new Date(),
-      Telefono: bookingData.telefonoCliente,
-      Email: bookingData.correoCliente
+      Telefono: bookingData.clientPhone,
+      Email: bookingData.clientEmail
     };
 
     await crearReserva(reserva);

@@ -8,7 +8,9 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
   const location = useLocation();
 
   const clientNavItems = [
-    { path: '/', label: 'Servicios', icon: Sparkles }
+    { path: '/', label: 'Servicios', icon: Sparkles },
+    // Solo agrega "Mis Reservas" si el usuario está logueado
+    ...(user ? [{ path: '/mis-reservas', label: 'Mis Reservas', icon: User }] : [])
   ];
 
   const adminNavItems = [
@@ -48,26 +50,18 @@ const Layout = ({ user, onLogout, onLoginClick, children }) => {
             </motion.div>
 
             <div className="flex items-center gap-2">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = location.pathname === item.path;
-                return (
-                  <motion.button
-                    key={item.path}
-                    onClick={() => navigate(item.path)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-pink-50'
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="hidden sm:block">{item.label}</span>
-                  </motion.button>
-                );
-              })}
+              <nav>
+                <ul className="flex gap-6">
+                  {navItems.map(item => (
+                    <li key={item.path}>
+                      <Link to={item.path} className="flex items-center gap-2 hover:text-pink-500 transition">
+                        {item.icon && <item.icon className="w-5 h-5" />}
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
               {/* Botón para ver usuarios solo para admin */}
               {user?.role === 'admin' && (

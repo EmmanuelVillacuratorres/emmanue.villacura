@@ -163,7 +163,7 @@ const AdminBookings = ({ user, onLoginClick }) => {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="text-xl font-bold text-gray-900 mb-1">
-                          {booking.NombreCliente || booking.NombreCompleto || booking.NombreUsuario || 'Cliente'}
+                          {booking.NombreCliente || 'NombreCliente'}
                         </h3>
                         <div className="flex items-center gap-2">
                           <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(booking.Estado)}`}>
